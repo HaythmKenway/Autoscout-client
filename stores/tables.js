@@ -1,10 +1,13 @@
 export const useTargetStore = defineStore("targets", {
   state: () => ({
     data: null,
+    subs: null,
     error: null,
+    domain: "",
   }),
   getters: {
     targets: (state) => state.data?.targets || [],
+    subdomains: (state) => (state.subs ? state.subs.subDomain || [] : []),
   },
   actions: {
     async fetchTargets() {
@@ -62,19 +65,18 @@ export const useTargetStore = defineStore("targets", {
         console.error("Mutation error:", error);
       }
     },
-
     async removeTarget(tgt) {
       const mutationQuery = `
-        mutation removeTarget($target: String!) {
-            removeTarget(input: { 
-                target: $target 
-            }) {
-                target
-                status
-                lastModified
-            }
-        }
-    `;
+                mutation removeTarget($target: String!) {
+                    removeTarget(input: { 
+                        target: $target 
+                    }) {
+                        target
+                        status
+                        lastModified
+                    }
+                }
+            `;
 
       const requestBody = {
         query: mutationQuery,
@@ -110,16 +112,44 @@ export const useTargetStore = defineStore("targets", {
     async fetchSubs() {
       try {
         const query = gql`
-          {
-            targets {
+          query SubDomain($target: String!) {
+            subDomain(target: $target) {
               target
               status
             }
           }
         `;
-        const variables = { limit: 5 };
+        const variables = { target: this.domain };
         const { data } = await useAsyncQuery(query, variables);
-        this.data = data;
+        this.setSub(data);
+        console.log(this.subs);
+      } catch (error) {
+        this.error = error;
+      }
+    },
+    async setSub(sub) {
+      this.$patch({
+        subs: sub,
+      });
+    },
+    async setDomain(domain) {
+      this.domain = domain;
+      await this.fetchSubs();
+    },
+    async runScan() {
+      try {
+        const query = gql`
+          query RunScan($target: String!) {
+            runScan(target: $target) {
+              target
+              status
+            }
+          }
+        `;
+        const variables = { target: this.domain };
+        const { data } = await useAsyncQuery(query, variables);
+        this.setSub(data);
+        console.log(this.subs);
       } catch (error) {
         this.error = error;
       }
