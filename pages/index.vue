@@ -7,7 +7,7 @@
     <div class="border-black border-2 rounded-md m-2 mb-0 min-w-78	min-h-80 overflow-x-hidden overflow-y-scroll " >
   <div class="text-center text-white bg-slate-600 m-1 p-2 rounded-md"><h1>Targets</h1></div>
   <ul v-if="targets" class="m-3">
-    <div v-for="target in targets"><Targetfields :target="target " @click="updatesubs"/></div>
+    <div v-for="target in targets"><Targetfields :target="target "/></div>
   </ul>
 
 </div>

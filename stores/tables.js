@@ -28,6 +28,7 @@ export const useTargetStore = defineStore("targets", {
       }
     },
     async addTargets(tgt) {
+      if(tgt=="")return; 
       const mutationQuery = `
       mutation AddTarget($target: String!) {
         addTarget(input: { 
@@ -51,7 +52,9 @@ export const useTargetStore = defineStore("targets", {
           },
           body: JSON.stringify(requestBody),
         });
-
+         
+        var responseData=await response.json()
+        console.log(responseData.data.addTarget.status=="Target added successfully")
         this.data.targets.push({
           target: tgt,
         });
@@ -84,9 +87,13 @@ variables: { target: tgt },
           },
           body: JSON.stringify(requestBody),
         });
+        const responseData = await response.json();
         const indexToRemove = this.data.targets.findIndex((target) => target.target === tgt);
         if (indexToRemove !== -1) {
-          this.data.targets.splice(indexToRemove, 1);
+        if(responseData.data.removeTarget.status=="Target removed successfully")
+        {this.data.targets.splice(indexToRemove, 1);
+         if(tgt==this.domain)this.subs=[]
+            }
         }
       } catch (error) {
         console.error("Mutation error:", error);
@@ -116,7 +123,7 @@ variables: { target: tgt },
       this.domain = domain;
       await this.fetchSubs();
     },
-    async runScan() {
+    async runScan(target) {
       try {
         const query = gql`
           query RunScan($target: String!) {
@@ -126,7 +133,7 @@ variables: { target: tgt },
             }
           }
         `;
-        const variables = { target: this.domain };
+        const variables = { target: target };
         const { data } = await useAsyncQuery(query, variables);
         this.setSub(data);
       } catch (error) {

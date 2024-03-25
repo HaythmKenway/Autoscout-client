@@ -2,8 +2,8 @@
   <div class="flex justify-between">
    <button @click="setDomain"><h3>{{ props.target.target }}</h3></button> 
     <div>
-      <button @click="runScan"><Icon name="material-symbols-light:play-arrow" class="green text-xl"/></button>
-      <button @click="deleteTarget"><Icon name="mdi:delete" class=" red text-xl"/></button>
+      <button @click="store.runScan(props.target.target)"><Icon name="material-symbols-light:play-arrow" class="green text-xl"/></button>
+      <button @click="store.removeTarget(props.target.target)"><Icon name="mdi:delete" class=" red text-xl"/></button>
     </div>
   </div>
 </template>
@@ -12,19 +12,11 @@
 
 const props = defineProps({  target: Object
 });
-const runScan = () =>{
-  
-}
-const deleteTarget = () => {
-  const store = useTargetStore();
-  store.removeTarget(props.target.target);
-};
+const store = useTargetStore();
 
 const setDomain =() =>{
   const store= useTargetStore();
   store.fetchSubs()
-  console.log("ggd")
-  console.log(props.target.target)
   store.setDomain(props.target.target);  
 }
 </script>
