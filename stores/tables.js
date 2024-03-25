@@ -22,29 +22,27 @@ export const useTargetStore = defineStore("targets", {
         `;
         const variables = { limit: 5 };
         const { data } = await useAsyncQuery(query, variables);
-        this.data = data;
+        this.$patch({ data }); 
       } catch (error) {
         this.error = error;
       }
     },
     async addTargets(tgt) {
-      console.log(tgt);
       const mutationQuery = `
-    mutation AddTarget($target: String!) {
-      addTarget(input: { 
-        target: $target 
-      }) {
-        target
-        status
-        lastModified
+      mutation AddTarget($target: String!) {
+        addTarget(input: { 
+          target: $target 
+        }) {
+          target
+          status
+          lastModified
+        }
       }
-    }
-  `;
-      const requestBody = {
-        query: mutationQuery,
-        variables: { target: targetUrl.value },
-      };
-
+    `;
+    const requestBody = {
+      query: mutationQuery,
+      variables: { target: targetUrl.value },
+    };
       try {
         const response = await fetch("http://localhost:8000/query", {
           method: "POST",
@@ -54,35 +52,30 @@ export const useTargetStore = defineStore("targets", {
           body: JSON.stringify(requestBody),
         });
 
-        const responseData = await response.json();
-        console.log(responseData);
-        if (responseData.data.addTarget.status === "Target added successfully")
-          this.data.targets.push({
-            __typename: "Target",
-            target: tgt,
-          });
+        this.data.targets.push({
+          target: tgt,
+        });
       } catch (error) {
         console.error("Mutation error:", error);
       }
     },
     async removeTarget(tgt) {
       const mutationQuery = `
-                mutation removeTarget($target: String!) {
-                    removeTarget(input: { 
-                        target: $target 
-                    }) {
-                        target
-                        status
-                        lastModified
-                    }
-                }
-            `;
+      mutation removeTarget($target: String!) {
+          removeTarget(input: { 
+              target: $target 
+          }) {
+              target
+              status
+              lastModified
+          }
+      }
+  `;
 
-      const requestBody = {
-        query: mutationQuery,
-        variables: { target: tgt },
-      };
-
+const requestBody = {
+query: mutationQuery,
+variables: { target: tgt },
+};
       try {
         const response = await fetch("http://localhost:8000/query", {
           method: "POST",
@@ -91,19 +84,9 @@ export const useTargetStore = defineStore("targets", {
           },
           body: JSON.stringify(requestBody),
         });
-
-        const responseData = await response.json();
-
-        if (
-          responseData.data.removeTarget.status ===
-          "Target removed successfully"
-        ) {
-          const indexToRemove = this.data.targets.findIndex(
-            (target) => target.target === tgt
-          );
-          if (indexToRemove !== -1) {
-            this.data.targets.splice(indexToRemove, 1);
-          }
+        const indexToRemove = this.data.targets.findIndex((target) => target.target === tgt);
+        if (indexToRemove !== -1) {
+          this.data.targets.splice(indexToRemove, 1);
         }
       } catch (error) {
         console.error("Mutation error:", error);
@@ -121,16 +104,13 @@ export const useTargetStore = defineStore("targets", {
         `;
         const variables = { target: this.domain };
         const { data } = await useAsyncQuery(query, variables);
-        this.setSub(data);
-        console.log(this.subs);
+        this.$patch({ subs: data }); 
       } catch (error) {
         this.error = error;
       }
     },
     async setSub(sub) {
-      this.$patch({
-        subs: sub,
-      });
+      this.$patch({ subs: sub }); 
     },
     async setDomain(domain) {
       this.domain = domain;
@@ -149,7 +129,6 @@ export const useTargetStore = defineStore("targets", {
         const variables = { target: this.domain };
         const { data } = await useAsyncQuery(query, variables);
         this.setSub(data);
-        console.log(this.subs);
       } catch (error) {
         this.error = error;
       }
