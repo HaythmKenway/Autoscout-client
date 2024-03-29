@@ -3,10 +3,13 @@ export const useTargetStore = defineStore("targets", {
     data: null,
     subs: null,
     error: null,
+    inf: null,
+    subdomain: "No subdomain selected",
     domain: "",
   }),
   getters: {
     targets: (state) => state.data?.targets || [],
+    info: (state) => state.info?.info || [],
     subdomains: (state) => (state.subs ? state.subs.subDomain || [] : []),
   },
   actions: {
@@ -140,5 +143,33 @@ variables: { target: tgt },
         this.error = error;
       }
     },
+    async setSubdomain(subdomain){
+      this.subdomain=subdomain
+    },
+    async getData(target){
+        try {
+            const query = gql`
+            query GetData($target: String!){
+                getData(target: $target) {
+                  url
+                  title
+                  host
+                  status_code
+                  scheme
+                  a
+                  cname
+                  tech
+                  ip
+                  port
+                }
+            }`
+            const variables = { target: target };
+            const { data } = await useAsyncQuery(query, variables);
+            this.inf=data
+            
+        } catch (error) {
+          this.error = error;
+        }
+    }
   },
 });

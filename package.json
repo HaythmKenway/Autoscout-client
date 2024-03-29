@@ -12,6 +12,8 @@
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.11.4",
     "@pinia/nuxt": "^0.5.1",
+    "cookie": "^0.6.0",
+    "js-cookie": "^3.0.5",
     "nuxt": "^3.11.1",
     "nuxt-icon": "^0.6.10",
     "pinia": "^2.1.7",
