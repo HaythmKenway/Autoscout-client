@@ -168,6 +168,8 @@ variables: { target: tgt },
             }`
             const variables = { target: target };
             const { result } = await useQuery(query, variables);
+            const {getData}=result
+            console.log(getData)
             this.inf=result
             
         } catch (error) {

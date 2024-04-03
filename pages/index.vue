@@ -4,8 +4,8 @@
   </nav>
   <section class="border-spacing-1 grid grid-cols-4 gap-4">
   <Targetfields/>
-  <Subdomains/>
-  <Info/>
+  <!-- <Subdomains/> -->
+    <Info/>
 </section>
 </template>
 <script setup>
