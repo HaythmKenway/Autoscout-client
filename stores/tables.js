@@ -113,8 +113,9 @@ variables: { target: tgt },
           }
         `;
         const variables = { target: this.domain };
-        const { data } = await useAsyncQuery(query, variables);
-        this.$patch({ subs: data }); 
+        const {loading,error,result}= useQuery(query,variables)
+        console.log(result)
+        this.$patch({ subs: result }); 
       } catch (error) {
         this.error = error;
       }
@@ -128,6 +129,7 @@ variables: { target: tgt },
     },
     async runScan(target) {
       try {
+        console.log(target,"working")
         const query = gql`
           query RunScan($target: String!) {
             runScan(target: $target) {
@@ -137,8 +139,9 @@ variables: { target: tgt },
           }
         `;
         const variables = { target: target };
-        const { data } = await useAsyncQuery(query, variables);
-        this.setSub(data);
+        const data = await useAsyncQuery(query, variables);
+        console.log(data)
+        this.setSub(result);
       } catch (error) {
         this.error = error;
       }
@@ -164,8 +167,8 @@ variables: { target: tgt },
                 }
             }`
             const variables = { target: target };
-            const { data } = await useAsyncQuery(query, variables);
-            this.inf=data
+            const { result } = await useQuery(query, variables);
+            this.inf=result
             
         } catch (error) {
           this.error = error;

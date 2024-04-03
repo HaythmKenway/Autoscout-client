@@ -10,7 +10,7 @@
 const store=useTargetStore()
 const submitSub= async(tgt)=>{
  store.setSubdomain(tgt)
- await store.getData("https://shop.dyson.tw")
+ await store.getData(tgt)
 }
 </script>
 

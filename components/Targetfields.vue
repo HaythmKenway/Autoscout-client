@@ -22,6 +22,10 @@
 <script setup>
 
 const store = useTargetStore();
+const query = gql`{targets {target status}}`;
+const variables = { limit: 5 };
+const { data } = await useAsyncQuery(query, variables);
+store.data=data
 
 const setDomain = (tgt) => {
   store.fetchSubs();
